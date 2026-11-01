@@ -1,42 +1,34 @@
-# OBS Phone
+# OBS Phone — Android port project
 
-An original Android-first screen recording studio inspired by the scene-based workflow of desktop broadcasting software. This repository is an independent implementation and does not copy OBS Studio source code or assets.
+**Goal:** adapt the real OBS Studio engine for Android phones, with a touch-first interface. This repository is not the official OBS Project and is not affiliated with it.
 
-## Current status
+## Important status
 
-**0.1.0 — early MVP**
+The existing v0.1.0 APK is only a small Android screen-recorder prototype. It does **not** contain libobs, the OBS scene system, OBS encoders/outputs, or OBS plugins. It must not be described as an OBS Studio port.
 
-- Android-native recording UI
-- System screen capture using Android MediaProjection consent
-- Microphone audio capture
-- H.264 video + AAC audio in MP4
-- Foreground recording notification
-- GitHub Actions APK builds
+The obs-native-port branch starts the migration work. No Android APK containing the real OBS engine is available yet.
 
-Not implemented yet: scene compositor, camera source, desktop-style audio mixer, RTMP streaming, overlays, and advanced encoder controls. This is an early foundation, not feature parity with desktop OBS.
+## Target architecture
 
-## Build
+- **Engine:** upstream OBS Studio / libobs from https://github.com/obsproject/obs-studio, with upstream notices and license preserved.
+- **Android integration:** JNI bridge and Android-specific implementations for graphics, audio, capture, and lifecycle.
+- **Capture:** Android MediaProjection source, created as an OBS source rather than a separate MediaRecorder pipeline.
+- **UI:** native touch-first scene/source dock, preview, audio mixer, transitions, recording and streaming controls.
+- **Outputs:** OBS output/encoder pipeline, added only after the Android engine backend is working.
 
-Requires JDK 17, Android SDK platform 35 and Android build tools 35.
+## Port status
 
-```bash
-gradle assembleDebug
-```
+See docs/ANDROID_PORT.md for the technical plan and current blockers.
 
-APK: `app/build/outputs/apk/debug/app-debug.apk`
+The upstream OBS CMake project currently selects Windows, macOS, Linux, FreeBSD, and OpenBSD platform implementations for libobs; Android is not a supported platform in that build configuration. Therefore simply adding the desktop source tree to an Android Gradle project will not produce a working port. Android platform glue and dependency builds are required first.
 
-## Install
+## Current APK
 
-Download the APK from the Actions artifact or the Releases page, then install it on an Android device. Android will ask for screen-capture permission before each recording session.
+The existing release is a legacy recorder prototype, not OBS Studio:
+- https://github.com/tatarhost/OBS_phone/releases/tag/v0.1.0
 
-## Output
-
-Recordings are stored in the app-specific Movies directory under `OBSPhone`. They are private to the app sandbox in this first MVP.
-
-## Privacy
-
-Screen and microphone capture start only after the user initiates recording and grants Android's system permission. The app does not upload recordings.
+Do not use that APK as evidence that the native OBS port is complete.
 
 ## License
 
-GPL-3.0. See [LICENSE](LICENSE).
+OBS Studio is distributed under GPL-2.0. The project license file is aligned to the upstream GPL-2.0 text for the porting work. Individual third-party dependencies and assets may have their own licenses; see their notices before redistribution.
